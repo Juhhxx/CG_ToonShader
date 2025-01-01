@@ -461,8 +461,8 @@ namespace OpenTKBase
                         dataType = type
                     });
                 }
-                else if (uniformName == "ViewPos") uniforms.Add(new Uniform() { type = Uniform.Type.ViewPos, name = uniformName, slot = i, dataSize = size, dataType = type });
-                else if (uniformName == "ViewDir") uniforms.Add(new Uniform() { type = Uniform.Type.ViewDir, name = uniformName, slot = i, dataSize = size, dataType = type });
+                else if (uniformName == "ViewPos") uniforms.Add(new Uniform() { type = Uniform.Type.ViewPos, name = uniformName, slot = slot, dataSize = size, dataType = type });
+                else if (uniformName == "ViewDir") uniforms.Add(new Uniform() { type = Uniform.Type.ViewDir, name = uniformName, slot = slot, dataSize = size, dataType = type });
                 else
                 {
                     Console.WriteLine($"Can't parse uniform {uniformName} in shader {name}!");
