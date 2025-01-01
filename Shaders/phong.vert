@@ -28,6 +28,9 @@ uniform Light   Lights[MAX_LIGHTS];
 
 out vec4 fragColor;
 
+const int ToonColorLevels = 2;
+const float ToonScaleFactor = 1.0f / ToonColorLevels;
+
 vec3 ComputeDirectional(Light light, vec3 worldPos, vec3 worldNormal)
 {
     float d = clamp(-dot(worldNormal, light.direction), 0, 1);
@@ -41,8 +44,18 @@ vec3 ComputeDirectional(Light light, vec3 worldPos, vec3 worldNormal)
 
 vec3 ComputePoint(Light light, vec3 worldPos, vec3 worldNormal)
 {
+    vec4 dColor = vec4(0, 0, 0, 0);
+
     vec3  lightDir = normalize(worldPos - light.position);
     float d = clamp(-dot(worldNormal, lightDir), 0, 1);
+
+
+    if (d > 0)
+    {
+        d = floor(d * ToonColorLevels) * ToonScaleFactor;
+        
+    }
+
     vec3  v = normalize(ViewPos - worldPos);
     // Light dir is from light to point, but we want the other way around, hence the V - L
     vec3  h =  normalize(v - lightDir);
@@ -109,7 +122,7 @@ void main()
     }    
 
     // Add all lighting components
-    fragColor = envLighting + emissiveLighting + vec4(directLight, 0);
+    fragColor = emissiveLighting + vec4(directLight, 0);
 
     gl_Position = MatrixClip * vec4(position, 1.0);
 }

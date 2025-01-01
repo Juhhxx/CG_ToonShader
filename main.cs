@@ -6,8 +6,10 @@ using System.Drawing;
 
 namespace SDLBase
 {
+    
     public static class OpenTKProgram
     {
+        private static string useShader = "toon";
         public static void Main()
         {
             OpenTKApp app = new OpenTKApp(1280, 720, "Forest", true);
@@ -30,7 +32,7 @@ namespace SDLBase
             Texture grassNormal = new Texture(OpenTK.Graphics.OpenGL.TextureWrapMode.Repeat, OpenTK.Graphics.OpenGL.TextureMinFilter.Linear, true);
             grassNormal.Load("Textures/grass_normal.png");
 
-            Material material = new Material(Shader.Find("Shaders/phong_pp"));
+            Material material = new Material(Shader.Find($"Shaders/{useShader}"));
             material.Set("Color", Color4.White);
             material.Set("ColorEmissive", Color4.Black);
             material.Set("Specular", new Vector2(2.0f, 128.0f));
@@ -62,7 +64,7 @@ namespace SDLBase
 
             Mesh mesh = GeometryFactory.AddCylinder(widthTrunk, heightTrunk, 8, true);
 
-            Material material = new Material(Shader.Find("Shaders/phong_pp"));
+            Material material = new Material(Shader.Find($"Shaders/{useShader}"));
             material.Set("Color", new Color4(rnd.Range(0.6f, 0.9f), rnd.Range(0.4f, 0.6f), rnd.Range(0.15f, 0.35f), 1.0f));
             material.Set("ColorEmissive", Color4.Black);
             material.Set("Specular", Vector2.UnitY);
@@ -77,7 +79,7 @@ namespace SDLBase
             // Leaves
             mesh = GeometryFactory.AddCylinder(rnd.Range(widthTrunk * 1.5f, widthTrunk * 4.0f), rnd.Range(heightTrunk * 2.0f, heightTrunk * 8.0f), 16, true);
 
-            material = new Material(Shader.Find("Shaders/phong_pp"));
+            material = new Material(Shader.Find($"Shaders/{useShader}"));
             material.Set("Color", new Color4(rnd.Range(0.0f, 0.2f), rnd.Range(0.6f, 0.8f), rnd.Range(0.0f, 0.2f), 1.0f));
             material.Set("ColorEmissive", Color4.Black);
             material.Set("Specular", Vector2.UnitY);
@@ -127,7 +129,7 @@ namespace SDLBase
         {
             Mesh mesh = GeometryFactory.AddSphere(0.5f, 32, true);
 
-            Material material = new Material(Shader.Find("Shaders/phong_pp"));
+            Material material = new Material(Shader.Find($"Shaders/{useShader}"));
             material.Set("Color", Color4.White);
             material.Set("ColorEmissive", Color4.Black);
             material.Set("Specular", Vector2.UnitY);
