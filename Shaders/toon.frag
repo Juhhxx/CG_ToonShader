@@ -66,7 +66,6 @@ vec3 ComputePoint(Light light, vec3 worldPos, vec3 worldNormal, vec4 materialCol
     float d = clamp(-dot(worldNormal, lightDir), 0, 1);
     d = floor(d * ToonColorLevels) * ToonScaleFactor;
     
-
     vec3  v = normalize(ViewPos - worldPos);
     // Light dir is from light to point, but we want the other way around, hence the V - L
     vec3  h =  normalize(v - lightDir);
