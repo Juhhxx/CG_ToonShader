@@ -77,6 +77,12 @@ Comecei então por editar o ficheiro `phong_pp.frag` com as seguintes alteraçõ
     }
     ```
 
+**Explicação de como Funciona o Toon Effect no Diffuse Factor**
+
+A técnica que usei para alterar o factor de difusão foi, como descrito acima, a.
+
+![Diffuse Factor Light Curve](https://github.com/Juhhxx/CG_ToonShader/blob/main/Images/desmos-graph%20(6).png)
+
 Estas duas alterações ja criaram um efeito bastante *in-line* com o que eu pretendia, dando o efeito de *toon* que estava á procura.
 
 Colocar imagens do resultado e tambem falar masi sobre o Diffuse e como a função foi alterada (com iamgens tambem).
