@@ -1,0 +1,76 @@
+{
+  "format": 1,
+  "restore": {
+    "C:\\Users\\count\\OneDrive - Ensino Lusófona\\Lusofona\\cg\\CG_ToonShader\\Project_OpentTK\\OpenTKBase.csproj": {}
+  },
+  "projects": {
+    "C:\\Users\\count\\OneDrive - Ensino Lusófona\\Lusofona\\cg\\CG_ToonShader\\Project_OpentTK\\OpenTKBase.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\count\\OneDrive - Ensino Lusófona\\Lusofona\\cg\\CG_ToonShader\\Project_OpentTK\\OpenTKBase.csproj",
+        "projectName": "OpenTKBase",
+        "projectPath": "C:\\Users\\count\\OneDrive - Ensino Lusófona\\Lusofona\\cg\\CG_ToonShader\\Project_OpentTK\\OpenTKBase.csproj",
+        "packagesPath": "C:\\Users\\count\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\count\\OneDrive - Ensino Lusófona\\Lusofona\\cg\\CG_ToonShader\\Project_OpentTK\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\count\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "dependencies": {
+            "OpenTK": {
+              "target": "Package",
+              "version": "[4.8.0, )"
+            },
+            "StbImageSharp": {
+              "target": "Package",
+              "version": "[2.27.13, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

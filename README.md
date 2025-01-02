@@ -44,7 +44,7 @@ Comecei então por editar o ficheiro `phong_pp.frag` com as seguintes alteraçõ
     const int ToonColorLevels = 4;
 
     // Define o factor de escala a ser aplicado depois de se multiplicar pelo ToonColorLevels
-    const flot ToonScaleFactor = 1.0 / ToonColorLevels;
+    const float ToonScaleFactor = 1.0 / ToonColorLevels;
     ```
 
 * Editei o método que calcula as *points lights* de modo a mudar a difusão de uma *smooth curve* para uma *stair function*:
