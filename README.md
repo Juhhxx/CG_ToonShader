@@ -77,16 +77,19 @@ Comecei então por editar o ficheiro `phong_pp.frag` com as seguintes alteraçõ
     }
     ```
 
-**Explicação de como Funciona o Toon Effect no Diffuse Factor**
+#### Explicação de como Funciona o Toon Effect no Diffuse Factor
 
-A técnica que usei para alterar o factor de difusão foi, como descrito acima, a.
+A técnica que usei para alterar o factor de difusão foi, como descrito acima, a aplicação de um floor á multiplicação do resultado original do Diffuse com o número de *shades* (neste caso 4) se sombra que pretendo aplicar, isto vai tornar os resultados da difusão, que variam entre 0 e 1, em resutlados que variam entre, neste caso, 0 e 3, este resultado é depois dividido pelo numero de *shades* para ser reduzido novamente á escala 0 a 1.
+
+Abaixo apresento um gráfico que mostra a equação normal do cálculo da difusão, representada a vermelho (🟥), juntamente com o resultado da mesma depois de lhe ser aplicado o efeito de *toon*, representado a verde (🟩).
 
 ![Diffuse Factor Light Curve](https://github.com/Juhhxx/CG_ToonShader/blob/main/Images/desmos-graph%20(6).png)
 
-🟥: *d( x )* = cos( *b* )
-*b* = *x* \* π / 180
-
-🟩: *t( x )* = floor( *d(x)* \* 4 )
+>🟥: *d( x )* = cos( *b* )
+>
+>*b* = *x* \* π / 180
+>
+>🟩: *t( x )* = floor( *d( x )* \* 4 )
 
 
 
