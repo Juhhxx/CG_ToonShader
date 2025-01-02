@@ -70,9 +70,8 @@ vec3 ComputePoint(Light light, vec3 worldPos, vec3 worldNormal, vec4 materialCol
     vec3  v = normalize(ViewPos - worldPos);
     // Light dir is from light to point, but we want the other way around, hence the V - L
     vec3  h =  normalize(v - lightDir);
-    float s = 0;
 
-    return clamp(d * materialColor.xyz + s, 0, 1) * light.color.rgb * light.intensity * ComputeAttenuation(light, worldPos);
+    return clamp(d * materialColor.xyz, 0, 1) * light.color.rgb * light.intensity * ComputeAttenuation(light, worldPos);
 }
 
 vec3 ComputeSpot(Light light, vec3 worldPos, vec3 worldNormal, vec4 materialColor)
@@ -80,11 +79,11 @@ vec3 ComputeSpot(Light light, vec3 worldPos, vec3 worldNormal, vec4 materialColo
     vec3  lightDir = normalize(worldPos - light.position);
 
     float d = clamp(-dot(worldNormal, lightDir), 0, 1);
-    d = floor(d * ToonColorLevels) * ToonScaleFactor;
 
     float spot = (acos(dot(lightDir, light.direction)) - light.spot.x) / (light.spot.y - light.spot.x);
 
     d = d * mix(1, 0, clamp(spot, 0, 1));
+    d = floor(d * ToonColorLevels) * ToonScaleFactor;
 
     vec3  v = normalize(ViewPos - worldPos);
     // Light dir is from light to point, but we want the other way around, hence the V - L

@@ -93,6 +93,65 @@ namespace SDLBase
             mr.material = material;
         }
 
+        static void CreateLilGuy(Vector3 pos)
+        {
+            // Torso
+            Mesh mesh = GeometryFactory.AddCylinder(0.8f, 1.0f, 8, true);
+
+            Material material = new Material(Shader.Find($"Shaders/{useShader}"));
+            material.Set("Color", new Color4(0.0f, 1.0f, 1.0f, 1.0f));
+            material.Set("ColorEmissive", Color4.Black);
+            material.Set("Specular", Vector2.UnitY);
+
+            GameObject mainObject = new GameObject();
+            mainObject.transform.position = pos + new Vector3(0.0f, 1.0f, 0.0f);
+            MeshFilter mf = mainObject.AddComponent<MeshFilter>();
+            mf.mesh = mesh;
+            MeshRenderer mr = mainObject.AddComponent<MeshRenderer>();
+            mr.material = material;
+
+            // Legs
+            mesh = GeometryFactory.AddCylinder(0.3f, 1.0f, 16, true);
+
+            material = new Material(Shader.Find($"Shaders/{useShader}"));
+            material.Set("Color", new Color4(0.0f, 0.0f, 1.0f, 1.0f));
+            material.Set("ColorEmissive", Color4.Black);
+            material.Set("Specular", Vector2.UnitY);
+
+            GameObject leftLegObj = new GameObject();
+            leftLegObj.transform.position = mainObject.transform.position + new Vector3(-0.5f, -1.0f, 0.0f);
+            leftLegObj.transform.SetParent(mainObject.transform);
+            mf = leftLegObj.AddComponent<MeshFilter>();
+            mf.mesh = mesh;
+            mr = leftLegObj.AddComponent<MeshRenderer>();
+            mr.material = material;
+
+            GameObject rightLegObj = new GameObject();
+            rightLegObj.transform.position = mainObject.transform.position + new Vector3(0.5f, -1.0f, 0.0f);
+            rightLegObj.transform.SetParent(mainObject.transform);
+            mf = rightLegObj.AddComponent<MeshFilter>();
+            mf.mesh = mesh;
+            mr = rightLegObj.AddComponent<MeshRenderer>();
+            mr.material = material;
+
+            // Head
+            mesh = GeometryFactory.AddSphere(0.6f, 32, false, true);
+
+            material = new Material(Shader.Find($"Shaders/{useShader}"));
+            material.Set("Color", new Color4(0.8f, 0.0f, 1.0f, 1.0f));
+            material.Set("ColorEmissive", Color4.Black);
+            material.Set("Specular", Vector2.UnitY);
+
+            GameObject headObj = new GameObject();
+            headObj.transform.position = mainObject.transform.position + new Vector3(0.0f, 1.6f, 0.0f);
+            headObj.transform.SetParent(mainObject.transform);
+            mf = headObj.AddComponent<MeshFilter>();
+            mf.mesh = mesh;
+            mr = headObj.AddComponent<MeshRenderer>();
+            mr.material = material;
+
+        }
+
         static void SetupEnvironment()
         {
             var cubeMap = new Texture();
@@ -113,13 +172,13 @@ namespace SDLBase
         {
             // Setup directional light turned 30 degrees down
             GameObject go = new GameObject();
-            go.transform.position = new Vector3(0.0f, 3.0f, 0.0f);
+            go.transform.position = new Vector3(0.0f, 20.0f, 0.0f);
             go.transform.rotation = Quaternion.FromAxisAngle(Vector3.UnitX, -MathF.PI * 0.16f);
             Light light = go.AddComponent<Light>();
-            light.type = Light.Type.Point;
+            light.type = Light.Type.Spot;
             light.lightColor = Color.White;
             light.intensity = 2.0f;
-            light.range = 100;
+            light.range = 200;
             light.cone = new Vector2(0.0f, MathF.PI / 2.0f);
 
             return go;
@@ -181,6 +240,9 @@ namespace SDLBase
             {
                 CreateRandomTree(rnd, forestSize);
             }
+
+            // Create Lil Guy
+            CreateLilGuy(new Vector3(2f,0f,2f));
 
             return ret;
         }
