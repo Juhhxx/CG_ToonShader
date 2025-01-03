@@ -237,7 +237,7 @@ Os efeitos finais foram os seguintes:
 
 #### *Toon Shader* com Luz em Foco
 
-![Toon Shader Final Spot](https://github.com/Juhhxx/CG_ToonShader/blob/main/Images/toon_final_Spot.png)
+![Toon Shader Final Spot](https://github.com/Juhhxx/CG_ToonShader/blob/main/Images/toon_final_spot.png)
 
 No final acabei com o efeito acima mostrado, gostei de como ficou o resultado final e decidi que já estava bastante bom para o que eu queria.
 
