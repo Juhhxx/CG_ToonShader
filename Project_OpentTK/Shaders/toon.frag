@@ -4,16 +4,10 @@ uniform vec4    MaterialColor = vec4(1,1,0,1);
 uniform vec2    MaterialSpecular = vec2(0,1);
 uniform vec4    MaterialColorEmissive = vec4(0,0,0,1);
 uniform vec4    EnvColor;
-uniform vec4    EnvColorTop;
-uniform vec4    EnvColorMid;
-uniform vec4    EnvColorBottom;
-uniform float   EnvFogDensity;
-uniform vec4    EnvFogColor;
 uniform vec3    ViewPos;
 
 uniform sampler2D   TextureBaseColor;
 uniform sampler2D   TextureNormalMap;
-uniform samplerCube EnvTextureCubeMap;
 
 uniform bool        HasTextureBaseColor;
 uniform bool        HasTextureNormalMap;
@@ -33,7 +27,7 @@ uniform int     LightCount;
 uniform Light   Lights[MAX_LIGHTS];
 
 const int ToonColorLevels = 4;
-const float ToonScaleFactor = 1.0 / ToonColorLevels;
+const int ToonColorLevelsSpec = 2;
 
 float saturate(float v)
 {
@@ -47,20 +41,22 @@ float ComputeAttenuation(Light light, vec3 worldPos)
     return saturate(saturate(5 * (1 - d)) / (1 + 25 * d * d));
 }
 
+void AddToonEffect(inout float value, int toonFactor)
+{
+    // Restrain the given value into the number of factors given by toonFactor
+    value = floor(value * toonFactor) / toonFactor;
+}
+
 vec3 ComputeDirectional(Light light, vec3 worldPos, vec3 worldNormal, vec4 materialColor)
 {
     float d = clamp(-dot(worldNormal, light.direction), 0, 1);
-    d = floor(d * ToonColorLevels) * ToonScaleFactor;
+    AddToonEffect( d, ToonColorLevels);
 
     vec3  v = normalize(ViewPos - worldPos);
-    // Light dir is from light to point, but we want the other way around, hence the V - L
     vec3  h =  normalize(v - light.direction);
-
-    float dampedFactor = pow(max(dot(h, worldNormal), 0), MaterialSpecular.y);
-
-    dampedFactor = floor(dampedFactor * ToonColorLevels) * ToonScaleFactor;
-
-    float s = MaterialSpecular.x * dampedFactor;
+    float spec = pow(max(dot(h, worldNormal), 0), MaterialSpecular.y);
+    AddToonEffect( spec, ToonColorLevelsSpec);
+    float s = MaterialSpecular.x * spec;
 
     return clamp(d * materialColor.xyz + s, 0, 1) * light.color.rgb * light.intensity;
 }
@@ -68,18 +64,14 @@ vec3 ComputeDirectional(Light light, vec3 worldPos, vec3 worldNormal, vec4 mater
 vec3 ComputePoint(Light light, vec3 worldPos, vec3 worldNormal, vec4 materialColor)
 {
     vec3  lightDir = normalize(worldPos - light.position);
-    float d = clamp(-dot(worldNormal, lightDir), 0, 1);
-    d = floor(d * ToonColorLevels) * ToonScaleFactor;
+    float d = -dot(worldNormal, lightDir);
+    AddToonEffect( d, ToonColorLevels);
     
     vec3  v = normalize(ViewPos - worldPos);
-    // Light dir is from light to point, but we want the other way around, hence the V - L
     vec3  h =  normalize(v - lightDir);
-
-    float dampedFactor = pow(max(dot(h, worldNormal), 0), MaterialSpecular.y);
-
-    dampedFactor = floor(dampedFactor * ToonColorLevels) * ToonScaleFactor;
-
-    float s = MaterialSpecular.x * dampedFactor;
+    float spec = pow(max(dot(h, worldNormal), 0), MaterialSpecular.y);
+    AddToonEffect( spec, ToonColorLevelsSpec);
+    float s = MaterialSpecular.x * spec;
 
     return clamp(d * materialColor.xyz + s, 0, 1) * light.color.rgb * light.intensity * ComputeAttenuation(light, worldPos);
 }
@@ -87,23 +79,17 @@ vec3 ComputePoint(Light light, vec3 worldPos, vec3 worldNormal, vec4 materialCol
 vec3 ComputeSpot(Light light, vec3 worldPos, vec3 worldNormal, vec4 materialColor)
 {
     vec3  lightDir = normalize(worldPos - light.position);
-
     float d = clamp(-dot(worldNormal, lightDir), 0, 1);
 
     float spot = (acos(dot(lightDir, light.direction)) - light.spot.x) / (light.spot.y - light.spot.x);
-
     d = d * mix(1, 0, clamp(spot, 0, 1));
-    d = floor(d * ToonColorLevels) * ToonScaleFactor;
+    AddToonEffect( d, ToonColorLevels);
 
     vec3  v = normalize(ViewPos - worldPos);
-    // Light dir is from light to point, but we want the other way around, hence the V - L
     vec3  h =  normalize(v - lightDir);
-    
-    float dampedFactor = pow(max(dot(h, worldNormal), 0), MaterialSpecular.y);
-
-    dampedFactor = floor(dampedFactor * ToonColorLevels) * ToonScaleFactor;
-
-    float s = MaterialSpecular.x * dampedFactor;
+    float spec = pow(max(dot(h, worldNormal), 0), MaterialSpecular.y);
+    AddToonEffect( spec, ToonColorLevelsSpec);
+    float s = MaterialSpecular.x * spec;
     
     return clamp(d * materialColor.xyz + s, 0, 1) * light.color.rgb * light.intensity * ComputeAttenuation(light, worldPos);
 }
@@ -157,8 +143,7 @@ void main()
     if (HasTextureBaseColor) matColor *= texture(TextureBaseColor, fragUV);
 
     // Ambient component - get data from 4th mipmap of the cubemap (effective hardware blur)
-    vec3 envLighting = EnvColor.xyz * MaterialColor.xyz * textureLod(EnvTextureCubeMap, worldNormal, 8).xyz;
-
+    vec3 envLighting = EnvColor.xyz * MaterialColor.xyz;
     // Emissive component
     vec3 emissiveLighting = MaterialColorEmissive.rgb;
 
@@ -171,9 +156,4 @@ void main()
 
     // Add all lighting components
     OutputColor = vec4(envLighting + emissiveLighting + directLight, 1);
-
-    // Fog
-    // float distToCamera = length(worldPos - ViewPos);
-    // float fogFactor = 1 / pow(2, EnvFogDensity * distToCamera * distToCamera);
-    // OutputColor = mix(EnvFogColor, OutputColor, fogFactor);
 }

@@ -3,6 +3,7 @@ using OpenTKBase;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 
 namespace SDLBase
 {
@@ -77,7 +78,9 @@ namespace SDLBase
             mr.material = material;
 
             // Leaves
-            mesh = GeometryFactory.AddCylinder(rnd.Range(widthTrunk * 1.5f, widthTrunk * 4.0f), rnd.Range(heightTrunk * 2.0f, heightTrunk * 8.0f), 16, true);
+            float radiusLeaves = rnd.Range(widthTrunk * 1.5f, widthTrunk * 3.0f);
+
+            mesh = GeometryFactory.AddSphere(radiusLeaves, 16, false, true);
 
             material = new Material(Shader.Find($"Shaders/{useShader}"));
             material.Set("Color", new Color4(rnd.Range(0.0f, 0.2f), rnd.Range(0.6f, 0.8f), rnd.Range(0.0f, 0.2f), 1.0f));
@@ -85,7 +88,7 @@ namespace SDLBase
             material.Set("Specular", Vector2.UnitY);
 
             GameObject leaveObj = new GameObject();
-            leaveObj.transform.position = mainObject.transform.position + Vector3.UnitY * heightTrunk;
+            leaveObj.transform.position = mainObject.transform.position + Vector3.UnitY * (heightTrunk / 2 + radiusLeaves);
             leaveObj.transform.SetParent(mainObject.transform);
             mf = leaveObj.AddComponent<MeshFilter>();
             mf.mesh = mesh;
@@ -140,7 +143,7 @@ namespace SDLBase
             material = new Material(Shader.Find($"Shaders/{useShader}"));
             material.Set("Color", new Color4(0.8f, 0.0f, 1.0f, 1.0f));
             material.Set("ColorEmissive", Color4.Black);
-            material.Set("Specular", Vector2.UnitY);
+            material.Set("Specular", new Vector2(2.0f, 128.0f));
 
             GameObject headObj = new GameObject();
             headObj.transform.position = mainObject.transform.position + new Vector3(0.0f, 1.6f, 0.0f);
@@ -150,6 +153,21 @@ namespace SDLBase
             mr = headObj.AddComponent<MeshRenderer>();
             mr.material = material;
 
+            // Head Outline
+            mesh = GeometryFactory.AddSphere(0.6f, 32, false, true);
+
+            material = new Material(Shader.Find($"Shaders/outline"));
+            material.Set("Color", new Color4(0.0f, 0.0f, 1.0f, 1.0f));
+            material.Set("ColorEmissive", Color4.Black);
+            material.Set("Specular", Vector2.UnitY);
+
+            GameObject headOutObj = new GameObject();
+            headOutObj.transform.position = mainObject.transform.position + new Vector3(0.0f, 1.6f, 0.0f);
+            headOutObj.transform.SetParent(mainObject.transform);
+            mf = headOutObj.AddComponent<MeshFilter>();
+            mf.mesh = mesh;
+            mr = headOutObj.AddComponent<MeshRenderer>();
+            mr.material = material;
         }
 
         static void SetupEnvironment()
@@ -175,7 +193,7 @@ namespace SDLBase
             go.transform.position = new Vector3(0.0f, 20.0f, 0.0f);
             go.transform.rotation = Quaternion.FromAxisAngle(Vector3.UnitX, -MathF.PI * 0.16f);
             Light light = go.AddComponent<Light>();
-            light.type = Light.Type.Directional;
+            light.type = Light.Type.Point;
             light.lightColor = Color.White;
             light.intensity = 2.0f;
             light.range = 200;
@@ -201,6 +219,33 @@ namespace SDLBase
             mr.material = material;
 
             return (go, material);
+        }
+
+        static void CreateTexturedPlane(string textureName, Vector3 pos)
+        {
+            string texturePath = Path.Combine("Textures",textureName);
+
+            Mesh mesh = GeometryFactory.AddPlane(100,100,16,true);
+            mesh.ComputeNormalsAndTangentSpace();
+
+            Texture texture = new Texture(OpenTK.Graphics.OpenGL.TextureWrapMode.Repeat, OpenTK.Graphics.OpenGL.TextureMinFilter.Linear, true);
+            texture.Load($"{texturePath}_basecolor.png");
+            Texture textureNormal = new Texture(OpenTK.Graphics.OpenGL.TextureWrapMode.Repeat, OpenTK.Graphics.OpenGL.TextureMinFilter.Linear, true);
+            textureNormal.Load($"{texturePath}_normal.png");
+
+            Material material = new Material(Shader.Find($"Shaders/{useShader}"));
+            material.Set("Color", Color4.White);
+            material.Set("ColorEmissive", Color4.Black);
+            material.Set("Specular", Vector2.UnitY);
+            material.Set("BaseColor", texture);
+            material.Set("NormalMap", textureNormal);
+
+            GameObject go = new GameObject();
+            go.transform.position = pos;
+            MeshFilter mf = go.AddComponent<MeshFilter>();
+            mf.mesh = mesh;
+            MeshRenderer mr = go.AddComponent<MeshRenderer>();
+            mr.material = material;
         }
 
         static void CreateSkysphere(float radius)
@@ -242,7 +287,7 @@ namespace SDLBase
             }
 
             // Create Lil Guy
-            CreateLilGuy(new Vector3(2f,0f,2f));
+            CreateLilGuy(new Vector3(-2f,0f,2f));
 
             return ret;
         }
