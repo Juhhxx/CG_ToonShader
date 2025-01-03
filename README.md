@@ -103,6 +103,10 @@ Depois:
 
 ![Shader Test After](https://github.com/Juhhxx/CG_ToonShader/blob/main/Images/test_after.png)
 
+#### Problemas Encontrados
+
+#### Luz Especular
+
 Depois de já ter a parte do Diffuse Factor a funcionar e de mexer um bocado na cena, verifiquei, tanto por observar a cena como por rever os resources que tinha juntado, que ainda faltava mexer no **Specular Factor** que estava a produzir ainda um brilho muito *"realístico"*.
 
 ![Specular Light Realistic](https://github.com/Juhhxx/CG_ToonShader/blob/main/Images/specular_problem.png)
@@ -132,6 +136,75 @@ Este resultado já me agradou mais e foi o que acabei por seguir com.
 Sem a luz especular, a cena ganhava, definitivamente, um ar mais *cartoony*, no entanto não gostei tanto do efeito pois assim não existia diferença entre os objectos mais metálicos e os mais plásticos.
 
 Pelo motivo acima referido, e como gostei bastante do resultado final da luz especular com o efeito *toon*, acabei por decidir ficar, como já tinha referido, com o efeito *toon* na luz especular com o factor reduzido.
+
+#### Luz Ambiente
+
+Outro problema que encontrei enquanto esplorava a cena foi que, na parte mais escura das sombras, algum tipo de iluminação que nâo a directa estava a intreferir com *output* do shader e a causar gradientes suaves que não encaixavam a a estética *toon*.
+
+#### Efeito da Luz Ambiente nos Objectos
+
+![Ambient Light Cubemap Influence](https://github.com/Juhhxx/CG_ToonShader/blob/main/Images/ambientlight_problem.png)
+
+Sendo que estes objectos não eram *Emissive* nem existiam outras luzes em cena, deduzi que o problema devia estar na componente Ambiente da equação da luz.
+
+Quando fui ver como estava a ser calculada a luz ambiente, encontrei isto:
+
+```glsl
+// Ambient component - get data from 4th mipmap of the cubemap (effective hardware blur)
+vec3 envLighting = EnvColor.xyz * MaterialColor.xyz * textureLod(EnvTextureCubeMap, worldNormal, 8).xyz;
+```
+
+Ao ver o pedaço de código, que já haviamos falado em aula, percebi logo que só havia duas possibilidadeds do que podia estar a causar o efeito, a **Cor do Ambiente** (`EnvColor.xyz`) que sendo ela variante entre *Top*, *Mid* e *Bottom* poderia estar a afetar o resultado final como visto acima, ou a contribuição da **_Skybox_** (`textureLod(EnvTextureCubeMap, worldNormal, 8).xyz`) que sendo uma textura com várias cores poderia estar a a causar o efeito.
+
+Comecei por então explorar a teoria da Cor Ambiente, indo mexer nos seus valores na esperança de encontrar uma solução, fui então ao *setup* da cena vero nde estes valores estavam a ser definidos.
+
+Encontrei o seguinte método do professor que definia os valroes ambientes na cena:
+
+```c#
+static void SetupEnvironment()
+{
+    var cubeMap = new Texture();
+    cubeMap.LoadCube("Textures/cube_*.jpg");
+
+    var env = OpenTKApp.APP.mainScene.environment;
+
+    env.Set("Color", new Color4(0.2f, 0.2f, 0.2f, 1.0f));
+    env.Set("ColorTop", new Color4(0.0f, 1.0f, 1.0f, 1.0f));
+    env.Set("ColorMid", new Color4(1.0f, 1.0f, 1.0f, 1.0f));
+    env.Set("ColorBottom", new Color4(0.0f, 0.25f, 0.0f, 1.0f));
+    env.Set("FogDensity", 0.000001f);
+    env.Set("FogColor", Color.DarkCyan);
+    env.Set("CubeMap", cubeMap);
+}
+```
+
+Ao pricípio reparei que os valores *Top*, *Mid* e *Bottom* da Cor Ambiente eram bastante próximos, isto pos alguams dúvidas à minha teoria, mas decidi exprimentar à mesma para ver os resultados.
+
+Pondo os 3 valores todos iguais, notei que nada mudou.
+
+Isto desprovou a teoria de que estes valores estavam a causar o efeito, e depois de pensar melhor e rever algumas coisas, percebi o porquê, o shader que estava a usar não tomava sequer em consideração as cores *Top*, *Mid* e *Bottom*, apenas a cor Ambiente comum definida em `env.Set("Color", new Color4(0.2f, 0.2f, 0.2f, 1.0f));`.
+
+Isto levou-me a testar a minha segunda teoria, que era a que eu suspeitava mais, a da contribuição da *Skybox*.
+
+Esta estava a contribuir com uma textura borrada do seu *cube map* original, multiplicando o resultado final da cor por um pixel correspondente. Como o *cube map* tinha uma textura detalhada com muitas variações de cor, ja tinha na cebeça desde o princípio que este seria mais provavelmente o culpado.
+
+Decidi então remover a componente do *cube map* do cálculo da luz ambiente, ficando com o seguinte código:
+
+```glsl
+vec3 envLighting = EnvColor.xyz * MaterialColor.xyz;
+```
+
+O código acima apenas usa as contribuições da Cor Ambiente (`EnvColor.xyz`) e da Cor do Material (`MaterialColor.xyz`), deixando de parte a contribuição da *Skybox* pelas razões acima referidas.
+
+Ao correr o projecto deparei-me com isto:
+
+#### Efeito da Luz Ambiente com a Contribuição da *Skybox* Desligada
+
+![Ambient Light Cubemap Off](https://github.com/Juhhxx/CG_ToonShader/blob/main/Images/ambientlight_fix.png)
+
+Esta mudança, como pode ser observado acima, resolveu o problema, chegando a um resultado muito mais *cartoony* do que estava antes, tendo deixado até as partes sem luz dos objectos menos escuras.
+
+### Efeito Final de *Toon*
 
 ---
 
