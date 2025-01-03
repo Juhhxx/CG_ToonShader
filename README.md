@@ -10,11 +10,11 @@
 
 ## Relatório
 
-### *Toon Shader*
+### ***Toon Shader***
 
 No inicio do projecto, decidi começar por tentar implementar o que achei que seria mais simples, o *toon shader*.
 
-Ja tinha alguma ideia do que tinha de fazer, sabia ao menos que teria de mexer na equação que define como a luz afeta um objecto de forma a torná-la mais "quadrada".
+Ja tinha alguma ideia do que fazer, sabia ao menos que teria de mexer na equação que define como a luz afeta um objecto de forma a torná-la mais "quadrada".
 
 ### Pesquisa
 
@@ -154,7 +154,7 @@ Quando fui ver como estava a ser calculada a luz ambiente, encontrei isto:
 vec3 envLighting = EnvColor.xyz * MaterialColor.xyz * textureLod(EnvTextureCubeMap, worldNormal, 8).xyz;
 ```
 
-Ao ver o pedaço de código, que já haviamos falado em aula, percebi logo que só havia duas possibilidadeds do que podia estar a causar o efeito, a **Cor do Ambiente** (`EnvColor.xyz`) que sendo ela variante entre *Top*, *Mid* e *Bottom* poderia estar a afetar o resultado final como visto acima, ou a contribuição da **_Skybox_** (`textureLod(EnvTextureCubeMap, worldNormal, 8).xyz`) que sendo uma textura com várias cores poderia estar a a causar o efeito.
+Ao ver o pedaço de código, que já haviamos falado em aula, percebi logo que só havia duas possibilidadeds do que podia estar a causar o efeito, a **Cor do Ambiente** (`EnvColor.xyz`) que sendo ela variante entre *Top*, *Mid* e *Bottom* poderia estar a afetar o resultado final como visto acima, ou a contribuição da ***Skybox*** (`textureLod(EnvTextureCubeMap, worldNormal, 8).xyz`) que sendo uma textura com várias cores poderia estar a a causar o efeito.
 
 Comecei por então explorar a teoria da Cor Ambiente, indo mexer nos seus valores na esperança de encontrar uma solução, fui então ao *setup* da cena vero nde estes valores estavam a ser definidos.
 
@@ -202,10 +202,63 @@ Ao correr o projecto deparei-me com isto:
 
 ![Ambient Light Cubemap Off](https://github.com/Juhhxx/CG_ToonShader/blob/main/Images/ambientlight_fix.png)
 
-Esta mudança, como pode ser observado acima, resolveu o problema, chegando a um resultado muito mais *cartoony* do que estava antes, tendo deixado até as partes sem luz dos objectos menos escuras.
+Esta mudança, como pode ser observado acima, resolveu o problema, chegando a um resultado muito mais *cartoony* do que estava antes, tendo deixado até as partes sem luz dos objectos menos escuras que antes estavam a ser afetadas pela cor da *Skybox*.
 
 ### Efeito Final de *Toon*
 
+Para dar os toques finais ao shader, organizei-o melhor, criando um método para tratar de aplicar o efeito de *toon* aos valores desejados e removi membros que estavam a ser inutilizados pelo shader para limpar espaço.
+
+O método do cálculo do efeito de *toon* ficou o seguinte:
+
+```glsl
+const int ToonColorLevels = 4;
+const int ToonColorLevelsSpec = 2;
+
+void AddToonEffect(inout float value, int toonFactor)
+{
+    // Restrain the given value into the number of factors given by toonFactor
+    value = floor(value * toonFactor) / toonFactor;
+}
+```
+
+Acabei por definir duas constantes juntamente com o método, uma para o *Difuse Factor* (`ToonColorLevels`) e outra para o *Specular Factor* (`ToonColorLevelsSpec`).
+
+Depois apliquei este método tambèm à luz *Spot* e *Directional*.
+
+Os efeitos finais foram os seguintes:
+
+#### *Toon Shader* com Luz Direcional
+
+![Toon Shader Final Directional](https://github.com/Juhhxx/CG_ToonShader/blob/main/Images/toon_final_directional.png)
+
+#### *Toon Shader* com Luz Pontual
+
+![Toon Shader Final Point](https://github.com/Juhhxx/CG_ToonShader/blob/main/Images/toon_final_point.png)
+
+#### *Toon Shader* com Luz em Foco
+
+![Toon Shader Final Spot](https://github.com/Juhhxx/CG_ToonShader/blob/main/Images/toon_final_Spot.png)
+
+No final acabei com o efeito acima mostrado, gostei de como ficou o resultado final e decidi que já estava bastante bom para o que eu queria.
+
 ---
 
-### *Outline Effect*
+### ***Outline Effect***
+
+Depois de ter o *toon shader* completo, faltava-me a parte, que ccnsiderei, mais difícil, as linhas de *outline*.
+
+Tinha alguma ideia do que talvez precisaria de fazer, mas admito que no princípio não fazia ideia por onde começar.
+
+### Pesquisa
+
+Pesquisando pela internet sobre como fazer linhas de *outline* em objectos consegui encontrar vários recursos que me ajudaram a perceber melhor o que teria de fazer para atingir o efeito que queria.
+
+Lista com alguns dos recursos online que encontrei:
+
+* [GL3 Shaders | Part 07 - Per-Object Outline Effect - Amazing Max Stuff](https://www.youtube.com/watch?v=SahxZjPWsQw);
+* [OpenGL Tutorial 15 - Stencil Buffer & Outlining - Victor Gordan](https://www.youtube.com/watch?v=ngF9LWWxhd0);
+* [5 ways to draw an outline - Alexander Ameye](https://ameye.dev/notes/rendering-outlines/);
+* [Answer to : outline object effect - Martin Sojka](https://gamedev.stackexchange.com/questions/34652/outline-object-effect);
+* [Building the classic outline shader](https://www.videopoetics.com/tutorials/pixel-perfect-outline-shaders-unity/#building-the-classic-outline-shader).
+
+### Implementação
