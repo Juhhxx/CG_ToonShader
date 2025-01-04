@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "BBNnr5aMTi0=",
+  "dgSpecHash": "pGn+1wtp2+4=",
   "success": true,
-  "projectFilePath": "C:\\Users\\count\\OneDrive - Ensino Lusófona\\Lusofona\\cg\\CG_ToonShader\\Project_OpentTK\\OpenTKBase.csproj",
+  "projectFilePath": "c:\\Users\\count\\OneDrive - Ensino Lusófona\\Lusofona\\cg\\CG_ToonShader\\Project_OpentTK\\OpenTKBase.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\count\\.nuget\\packages\\opentk\\4.8.0\\opentk.4.8.0.nupkg.sha512",
     "C:\\Users\\count\\.nuget\\packages\\opentk.audio.openal\\4.8.0\\opentk.audio.openal.4.8.0.nupkg.sha512",

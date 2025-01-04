@@ -154,20 +154,20 @@ namespace SDLBase
             mr.material = material;
 
             // Head Outline
-            mesh = GeometryFactory.AddSphere(0.6f, 32, false, true);
+            // mesh = GeometryFactory.AddSphere(0.6f, 32, false, true);
 
-            material = new Material(Shader.Find($"Shaders/outline"));
-            material.Set("Color", new Color4(0.0f, 0.0f, 1.0f, 1.0f));
-            material.Set("ColorEmissive", Color4.Black);
-            material.Set("Specular", Vector2.UnitY);
+            // material = new Material(Shader.Find($"Shaders/outline"));
+            // material.Set("Color", new Color4(0.0f, 0.0f, 1.0f, 1.0f));
+            // material.Set("ColorEmissive", Color4.Black);
+            // material.Set("Specular", Vector2.UnitY);
 
-            GameObject headOutObj = new GameObject();
-            headOutObj.transform.position = mainObject.transform.position + new Vector3(0.0f, 1.6f, 0.0f);
-            headOutObj.transform.SetParent(mainObject.transform);
-            mf = headOutObj.AddComponent<MeshFilter>();
-            mf.mesh = mesh;
-            mr = headOutObj.AddComponent<MeshRenderer>();
-            mr.material = material;
+            // GameObject headOutObj = new GameObject();
+            // headOutObj.transform.position = mainObject.transform.position + new Vector3(0.0f, 1.6f, 0.0f);
+            // headOutObj.transform.SetParent(mainObject.transform);
+            // mf = headOutObj.AddComponent<MeshFilter>();
+            // mf.mesh = mesh;
+            // mr = headOutObj.AddComponent<MeshRenderer>();
+            // mr.material = material;
         }
 
         static void SetupEnvironment()
@@ -190,10 +190,10 @@ namespace SDLBase
         {
             // Setup directional light turned 30 degrees down
             GameObject go = new GameObject();
-            go.transform.position = new Vector3(0.0f, 20.0f, 0.0f);
+            go.transform.position = new Vector3(0.0f, 20.0f, 20.0f);
             go.transform.rotation = Quaternion.FromAxisAngle(Vector3.UnitX, -MathF.PI * 0.16f);
             Light light = go.AddComponent<Light>();
-            light.type = Light.Type.Point;
+            light.type = Light.Type.Spot;
             light.lightColor = Color.White;
             light.intensity = 2.0f;
             light.range = 200;

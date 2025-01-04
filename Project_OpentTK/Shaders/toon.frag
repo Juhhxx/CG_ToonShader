@@ -26,9 +26,6 @@ struct Light
 uniform int     LightCount;
 uniform Light   Lights[MAX_LIGHTS];
 
-const int ToonColorLevels = 4;
-const int ToonColorLevelsSpec = 2;
-
 float saturate(float v)
 {
     return clamp(v, 0, 1);
@@ -40,6 +37,9 @@ float ComputeAttenuation(Light light, vec3 worldPos)
 
     return saturate(saturate(5 * (1 - d)) / (1 + 25 * d * d));
 }
+
+const int ToonColorLevels = 4;
+const int ToonColorLevelsSpec = 2;
 
 void AddToonEffect(inout float value, int toonFactor)
 {

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\count\\OneDrive - Ensino Lusófona\\Lusofona\\cg\\CG_ToonShader\\Project_OpentTK\\OpenTKBase.csproj": {}
+    "c:\\Users\\count\\OneDrive - Ensino Lusófona\\Lusofona\\cg\\CG_ToonShader\\Project_OpentTK\\OpenTKBase.csproj": {}
   },
   "projects": {
-    "C:\\Users\\count\\OneDrive - Ensino Lusófona\\Lusofona\\cg\\CG_ToonShader\\Project_OpentTK\\OpenTKBase.csproj": {
+    "c:\\Users\\count\\OneDrive - Ensino Lusófona\\Lusofona\\cg\\CG_ToonShader\\Project_OpentTK\\OpenTKBase.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\count\\OneDrive - Ensino Lusófona\\Lusofona\\cg\\CG_ToonShader\\Project_OpentTK\\OpenTKBase.csproj",
+        "projectUniqueName": "c:\\Users\\count\\OneDrive - Ensino Lusófona\\Lusofona\\cg\\CG_ToonShader\\Project_OpentTK\\OpenTKBase.csproj",
         "projectName": "OpenTKBase",
-        "projectPath": "C:\\Users\\count\\OneDrive - Ensino Lusófona\\Lusofona\\cg\\CG_ToonShader\\Project_OpentTK\\OpenTKBase.csproj",
+        "projectPath": "c:\\Users\\count\\OneDrive - Ensino Lusófona\\Lusofona\\cg\\CG_ToonShader\\Project_OpentTK\\OpenTKBase.csproj",
         "packagesPath": "C:\\Users\\count\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\count\\OneDrive - Ensino Lusófona\\Lusofona\\cg\\CG_ToonShader\\Project_OpentTK\\obj\\",
+        "outputPath": "c:\\Users\\count\\OneDrive - Ensino Lusófona\\Lusofona\\cg\\CG_ToonShader\\Project_OpentTK\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\count\\AppData\\Roaming\\NuGet\\NuGet.Config"
